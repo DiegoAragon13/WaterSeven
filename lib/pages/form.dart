@@ -1,9 +1,10 @@
 //Creare un formulario
 import 'package:flutter/material.dart';
 import 'package:waterseven/datatype/data.dart';
+import 'package:waterseven/pages/listdata.dart';
 
 
-class form extends StatefulWidget{
+class forms extends StatefulWidget{
 
   @override
   State<StatefulWidget> createState() {
@@ -12,7 +13,7 @@ class form extends StatefulWidget{
 
 }
 
-class _MyForm extends State<form>{
+class _MyForm extends State<forms> {
   final _controladorCiudad = TextEditingController();
   final _controladorTemperatura = TextEditingController();
   final _controladorCondicion = TextEditingController();
@@ -21,113 +22,95 @@ class _MyForm extends State<form>{
   List<Data> _datos = [];
 
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Registro de Clima"),
+        title: const Text("Registro de Clima"),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: <Widget>[
-            Padding(padding: EdgeInsets.all(20)),
-            TextField(
-              controller: _controladorCiudad,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Ciudad",
-
-              ),
-            ),
-      Padding(padding: EdgeInsets.all(20)),
-      TextField(
-          controller: _controladorTemperatura,
-          keyboardType: TextInputType.name,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: "Temperatura",
-
-          ),
-      ),
-      Padding(padding: EdgeInsets.all(20)),
-      TextField(
-          controller: _controladorCondicion,
-          keyboardType: TextInputType.name,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: "Condicion",
-
-          ),
-      ),
-      Padding(padding: EdgeInsets.all(20)),
-      TextField(
-          controller: _controladorIcono,
-          keyboardType: TextInputType.name,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: "Icono (Ejemplo: ⛅, 🌧, 🌞, ⛈)",
-
-          ),
-      ),
-      Padding(padding: EdgeInsets.all(20)),
-      TextField(
-          controller: _controladorImagen,
-          keyboardType: TextInputType.name,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: "Nombre Imágen",
-
-          ),
-      ),
-            Padding(padding: EdgeInsets.all(20)),
+            _buildTextField(_controladorCiudad, "Ciudad"),
+            _buildTextField(_controladorTemperatura, "Temperatura"),
+            _buildTextField(_controladorCondicion, "Condición"),
+            _buildTextField(_controladorIcono, "Icono (Ejemplo: ⛅, 🌧, 🌞, ⛈)"),
+            _buildTextField(_controladorImagen, "Nombre Imagen"),
+            const SizedBox(height: 20),
             ElevatedButton(
-            onPressed: (){
-              //Para que este bien escrito
-              if(validarNombre(_controladorCiudad).text){//EQUIVALENTE AL GET
-                setState(() {
-                  _datos.add(Data(
-                    _controladorCiudad.text,
-                    _controladorTemperatura.text,
-                    _controladorCondicion.text,
-                    _controladorIcono.text,
-                    _controladorImagen.text
-                  ));
-                });
-
-                Navigator.push(
-                    context, MaterialPageRoute(
-                    builder: (context){
-                      return ListData(_datos);
-                    }
-                )
-                );
-              }else{
-                alert(context);
-              }
-            },
-              child: Text('Enviar')
+              onPressed: _enviarDatos,
+              child: const Text('Enviar'),
             ),
           ],
         ),
       ),
-
     );
   }
 
-}
+  Widget _buildTextField(TextEditingController controller, String label) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.text,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: label,
+        ),
+      ),
+    );
+  }
 
-bool validarNombre(String cadena){
-  RegExp exp=RegExp(r'^[a-zA-Z/s]+$');
-  if(cadena.isEmpty){
-    return false;
-  }else if(!exp.hasMatch(cadena)){
-    return false;
+  void _enviarDatos() {
+    if (validarNombre(_controladorCiudad.text)) {
+      setState(() {
+        _datos.add(Data(
+          _controladorCiudad.text,
+          _controladorTemperatura.text,
+          _controladorCondicion.text,
+          _controladorIcono.text,
+          _controladorImagen.text,
+        ));
+      });
 
-  }else{
-    return true;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ListData(_datos)),
+      );
+    } else {
+      alert(context);
+    }
+  }
+
+  bool validarNombre(String cadena) {
+    RegExp exp = RegExp(r'^[a-zA-Z/s]+$');
+    if (cadena.isEmpty) {
+      return false;
+    } else if (!exp.hasMatch(cadena)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  void alert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('¡Alerta!'),
+          content: Text('Verifique la información ingresada.'),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Aceptar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

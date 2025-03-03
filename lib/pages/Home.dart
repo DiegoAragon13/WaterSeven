@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:waterseven/pages/cards.dart';
 import 'package:waterseven/pages/web.dart'; // Importar la página Web
+import 'package:waterseven/pages/form.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -64,7 +65,12 @@ class Home extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         backgroundColor: Colors.blueGrey,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => forms()),
+          );
+        },
       ),
     );
   }

@@ -68,6 +68,7 @@ flutter:
     - assets/maza.jpg
     - assets/aca.jpg
     - assets/puebla.jpg
+    - assets/cdmx.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
